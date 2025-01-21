@@ -1,25 +1,12 @@
+function [cleanVolts] = CleanEphys(tempPtID, shortBA, std_thresh, numCon)
 
-% Clean ephys and select brain area 
-
-% Outputs:
-% Matrix of bipolar referenced contacts from a single wire
-% Inputs: 
-% Subject ID, NWB file ID, Brain region name (either short or long)
-
-% Navigate to CLASE subject repository 
-% Match CLASE subject folder ID with input argument for Subject ID
-% Navigate to NWB folder in subject folder
-% Load NWB that matches input argument for NWB file ID
-% Use NWB Channel names to find channel indices that match input argument for Brain region name
-% Extract sub index for brain region from raw LFP data matrix
-% Conduct contact by contact artifact rejection 
-% Conduct bipolar referencing on remaining channels
-% OUTPUT matrix of bipolar referenced channels for specified wire
-
+% Inputs example 
 % tempPtID = 'CLASE018';
 % shortBA = 'LAMY';
-% std_thresh = 2;
+% std_thresh = 6;
 
+% Number of contacts of interest (1:3)
+% numCon = 1:3;
 
 %% Create paths and add folders to path
 % Create CD paths based on computer names
@@ -39,10 +26,10 @@ end
 addpath(genpath([strcat(nwbMatCD,'\matnwb-2.5.0.0')])); % add nwb_read and subfolders to path
 addpath('E:\GitKraken\NLX-Event-Viewer\NLX_IO_Code'); % add NLX files to path 
 
-%%
-% Navigate to CLASE subject repository 
+%% Load patient NWB file
 
-tempPtID = 'CLASE018'; % Patient ID 
+% Navigate to CLASE subject repository 
+% tempPtID = 'CLASE018'; % Patient ID 
 tmpPTpath = strcat(synologyCD,'\', tempPtID,'\'); % Patient path on synology
 
 paths = [];
@@ -56,30 +43,15 @@ tempLAname = string(nwbdirNames(nwbdirFilter)); % String the NWB file that has '
 
 tmp_LA = nwbRead(tempLAname); % Load the filter NWB file
 
-%% ephys timestamps data are in microseconds
-% mi_timestamps = tmp_LA.processing.get('ecephys').nwbdatainterface.get...
-%     ('LFP').electricalseries.get('MicroWireSeries').timestamps.load; %
-%    this is for micro 
-
-% Loads in Macrowire timestamps 
-ma_timestamps = tmp_LA.processing.get('ecephys').nwbdatainterface.get...
-    ('LFP').electricalseries.get('MacroWireSeries').timestamps.load;
-
 % Voltage data for all macrowires and their channels 
 ma_data = tmp_LA.processing.get('ecephys').nwbdatainterface.get...
     ('LFP').electricalseries.get('MacroWireSeries').data.load;
 
-% To get sampling frequency info you get it from the description 
-% ma_sampFreq = tmp_LA.processing.get('ecephys').nwbdatainterface.get...
-%     ('LFP').electricalseries.get('MacroWireSeries');
-
-% the sampling rate for the filtered data is downsampled to 500 Hz. My sampling freq is 500 Hz. 
-% use this to create power spectral denisty plots 
 
 %% Brain area data 
 % Get brain area names from NWB data 
 shortBAname = tmp_LA.general_extracellular_ephys_electrodes.vectordata.get('shortBAn').data.load; % short brain area name 
-longBAname = tmp_LA.general_extracellular_ephys_electrodes.vectordata.get('location').data.load; % long brain area name 
+% longBAname = tmp_LA.general_extracellular_ephys_electrodes.vectordata.get('location').data.load; % long brain area name 
 
 % Electrode names for only MA 
 electrodeType = tmp_LA.general_extracellular_ephys_electrodes.vectordata.get('label').data.load; % filter for MA and get rid of MI (microwire)
@@ -95,27 +67,75 @@ shortBAnameMA(elecMIflag == 1) =[];
 % Get brain area locations
 baFlag = contains(shortBAnameMA, shortBA);
 
-%% Ephys and brain area of interest 
-
 % Get voltage for brain area locations 
 baVoltRaw = ma_data(baFlag, :);
 
-% Artifact Rejection %
 
-% Inputs for artifact Rejection 
+%% Artifact Rejection %%
+
+% Inputs for artifact Rejection are standard deviation threshold and the
+% number of contacts of interest 
 % std_thresh = 2;
+% numCon = 1:3;
+
+% Get contacts from electrode you want
+tempVolt = baVoltRaw(numCon, :);
+
+for i = 1:length(numCon)
+
+    % Get 1 contact at a time
+    tempCon = double(tempVolt(i, :));
+
+    % Create threshold variable
+    mLFP = mean(tempCon);
+    sLFP = std(tempCon);
+    tempThresh = mLFP+(sLFP*std_thresh); % threshold
+
+    threshLoc = double.empty; % will hold the locations of all the volts that went over threshold
+
+    % for j = 1:length(tempCon)
+        threshLoc = abs(tempCon) > tempThresh;
+    % end % for / j / length(tempCon)
+
+    % Sum threshloc to see if there are over 5% of volts that went above the
+    % threshold
+
+    sumThresh = sum(threshLoc);
+    perOverThresh = sumThresh/length(tempCon); % it's less than 5 percent!
+
+    % Replace the row with NaN if it is over 5.5 %
+    % I changed this from 0.05 to 0.055 - ask JAT
+    if perOverThresh > 0.04
+        tempVolt(i,:) = nan;
+
+    end % if else
+
+    % [outLFP] = tempVolt; old code
+    % [artVolt] = tempVolt; 
+    % artVolt has all of the voltages per contact that passed the artifact
+    % rejection
 
 
+end % for / length(numCon)
 
+    [artVolt] = tempVolt; 
 
+% End of artifact rejection 
 
+%% Bipolar Refrencing %%
 
+baVoltBI = zeros(height(artVolt)-1, width(artVolt)); % this now has the bipolar refrenced voltages for the brain area of interest
 
+for bi = 1: height(artVolt)-1
 
+    tempChanInt = artVolt(bi,:); % channel of interst
+    tempChanOth = artVolt((bi+1), :); % channel below that will be averaged with channel of interest
 
+    tempVoltRef =  tempChanOth - tempChanInt;
+    baVoltBI(bi,:) = tempVoltRef;
 
-%% behavioral timestamps data are in microseconds
-eventStamps = tmp_LA.acquisition.get('events').timestamps.load;
-eventIDs = tmp_LA.acquisition.get('events').data.load;
+end % for bi
 
-%%
+cleanVolts = baVoltBI;
+
+end % function
