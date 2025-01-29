@@ -8,6 +8,12 @@ function [cleanVolts] = CleanEphys(tempPtID, shortBA, std_thresh, numCon)
 % Number of contacts of interest (1:3)
 % numCon = 1:3;
 
+% Outputs 
+% cleanVolts: cleaned ephys data that has been artifact rejected and bipolar refrenced. 
+% Per brain area and contacts within the brain area 
+
+% ma_timestampsDS: time stamps for each TTL that has been downsampled 
+
 %% Create paths and add folders to path
 % Create CD paths based on computer names
 % Before running script, make sure synology drive is on computer 
@@ -47,6 +53,14 @@ tmp_LA = nwbRead(tempLAname); % Load the filter NWB file
 ma_data = tmp_LA.processing.get('ecephys').nwbdatainterface.get...
     ('LFP').electricalseries.get('MacroWireSeries').data.load;
 
+% % Load in timestamps 
+% ma_timestamps = tmp_LA.processing.get('ecephys').nwbdatainterface.get...
+%     ('LFP').electricalseries.get('MacroWireSeries').timestamps.load;
+% 
+% % Downsample timedata
+% ma_timestampsDS = downsample(ma_timestamps, 8); % this is downstampled by a factor of 8
+
+
 
 %% Brain area data 
 % Get brain area names from NWB data 
@@ -75,7 +89,7 @@ baVoltRaw = ma_data(baFlag, :);
 
 % Inputs for artifact Rejection are standard deviation threshold and the
 % number of contacts of interest 
-% std_thresh = 2;
+% std_thresh = 6;
 % numCon = 1:3;
 
 % Get contacts from electrode you want
@@ -97,14 +111,14 @@ for i = 1:length(numCon)
         threshLoc = abs(tempCon) > tempThresh;
     % end % for / j / length(tempCon)
 
-    % Sum threshloc to see if there are over 5% of volts that went above the
+    % Sum threshloc to see if there are over 4% of volts that went above the
     % threshold
 
     sumThresh = sum(threshLoc);
-    perOverThresh = sumThresh/length(tempCon); % it's less than 5 percent!
+    perOverThresh = sumThresh/length(tempCon); % it's less than 4 percent!
 
-    % Replace the row with NaN if it is over 5.5 %
-    % I changed this from 0.05 to 0.055 - ask JAT
+    % Replace the row with NaN if it is over 4 %
+   
     if perOverThresh > 0.04
         tempVolt(i,:) = nan;
 
