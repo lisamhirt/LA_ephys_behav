@@ -41,12 +41,27 @@ outcomeGainTrial = outcomeGain;
 % start with gain loss trials since i only care about those and see what
 % gain loss trials they decided to gamble on 
 gainLoss_gambled = find(all(gainLossTrials & gambleTrials, 2)); % gives me the rows that they gambled on a gain loss trial 
+gainLoss_gambled2 = num2cell(gainLoss_gambled);
 
 % see if they won (gained) on their gamble. 1 means yes they gained 0 means no 
 gainLoss_gamble_outcomeGain= outcomeGainTrial(gainLoss_gambled); 
 
 % see if they loss on their gamble 
 gainLoss_gamble_outcomeLoss = outcomeLossTrial(gainLoss_gambled); 
+
+%%
+% Find where it was a Loss aversion (LA) trial and when they gambled 
+LA_Gamble = all(gainLossTrials & gambleTrials, 2);
+
+% Index where it was a LA trial, they gambled, and they won (gained)
+LA_GG = all(LA_Gamble & outcomeGainTrial,2);
+
+% Index where it was a LA trial, they gambled, and they loss 
+LA_GL = all(LA_Gamble & outcomeLossTrial,2);
+
+% Find if the trial is testing LA or RA. LA = 1. It repeats and is as long
+% as the ephysTrial variable
+% LAorRA = reshape(repmat(gainLOSS_trials', 4,1), [],1); 
 
 %% Ephys 
 
@@ -63,3 +78,36 @@ trialNum = num2cell(trialNum);
 
 % Concatenate the new column to the existing data
 ephysTrial = [ephys, trialNum];
+
+% Create column that has if it was LA_GG repeated 
+LA_GG_rep = num2cell(reshape(repmat(LA_GG', 4, 1), [], 1));
+
+% Concatenate the new column to the existing data - 4th column is LA_GG
+ephysTrial = [ephysTrial, LA_GG_rep];
+
+% Create column that has if was LA_GL repeated 
+LA_GL_rep = num2cell(reshape(repmat(LA_GL', 4, 1), [], 1));
+
+% Concatenate the new column to the existing data - 5th column is LA_GL
+ephysTrial = [ephysTrial, LA_GL_rep];
+
+%%
+
+minTest = min(ephysTrial{1,2}, [], "all");
+maxTest = max(ephysTrial{1,2}, [], "all");
+
+x = ones(2,length(ephysTrial{1,2}));
+
+swarmchart(x,ephysTrial{1,2})
+
+
+%%
+
+ephysTab = cell2table(ephysTrial, "VariableNames", ["EpochID" "Ephys" "TrialNum" "GambleGain" "GambleLoss"]);
+
+epochNames = ["Start" "Decision" "Response" "Outcome"];
+x = categorical(ephysTab.EpochID, epochNames);
+y = ephysTab.Ephys;
+
+swarmchart(x, y)
+
