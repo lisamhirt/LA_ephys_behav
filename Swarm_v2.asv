@@ -1,4 +1,5 @@
-%% Get behavior / gambling info 
+%% Behavior %%
+% Get behavior / gambling info 
 cd('Y:\LossAversion\Patient folders\CLASE018\Behavioral-data'); % CD to patient folder
 
 % Load behavior file 
@@ -23,14 +24,10 @@ alternative_trials = eventTab.subjdata.cs.choice == 0 & ~checkIndex;
 % Outcome Loss
 outcomeLoss = eventTab.subjdata.cs.outcome < 0 & ~checkIndex;
 % Outcome no change
-outcomeNeutral = eventTab.subjdata.cs.outcome == 0 & ~checkIndex;
+% outcomeNeutral = eventTab.subjdata.cs.outcome == 0 & ~checkIndex;
 % Outcome gain
 outcomeGain = eventTab.subjdata.cs.outcome > 0 & ~checkIndex;
 
-% Get the money values 
-moneyTrial = eventTab.subjdata.cs.outcome; 
-
-%%
 % copy variables
 gainLossTrials = gainLOSS_trials;
 gambleTrials = gamble_trials; 
@@ -41,7 +38,6 @@ outcomeGainTrial = outcomeGain;
 % start with gain loss trials since i only care about those and see what
 % gain loss trials they decided to gamble on 
 gainLoss_gambled = find(all(gainLossTrials & gambleTrials, 2)); % gives me the rows that they gambled on a gain loss trial 
-gainLoss_gambled2 = num2cell(gainLoss_gambled);
 
 % see if they won (gained) on their gamble. 1 means yes they gained 0 means no 
 gainLoss_gamble_outcomeGain= outcomeGainTrial(gainLoss_gambled); 
@@ -49,7 +45,6 @@ gainLoss_gamble_outcomeGain= outcomeGainTrial(gainLoss_gambled);
 % see if they loss on their gamble 
 gainLoss_gamble_outcomeLoss = outcomeLossTrial(gainLoss_gambled); 
 
-%%
 % Find where it was a Loss aversion (LA) trial and when they gambled 
 LA_Gamble = all(gainLossTrials & gambleTrials, 2);
 
@@ -59,11 +54,8 @@ LA_GG = all(LA_Gamble & outcomeGainTrial,2);
 % Index where it was a LA trial, they gambled, and they loss 
 LA_GL = all(LA_Gamble & outcomeLossTrial,2);
 
-% Find if the trial is testing LA or RA. LA = 1. It repeats and is as long
-% as the ephysTrial variable
-% LAorRA = reshape(repmat(gainLOSS_trials', 4,1), [],1); 
 
-%% Ephys 
+%% Ephys %%
 
 % CD to folder 
 cd('Y:\LossAversion\LH_tempSave\CLASE018\Left');
@@ -94,135 +86,7 @@ ephysTrial = [ephysTrial, LA_GL_rep];
 % Make ephysTrial a table 
 ephysTab = cell2table(ephysTrial, "VariableNames", ["EpochID" "Ephys" "TrialNum" "GambleGain" "GambleLoss"]);
 
-
-% old swarmchart plotting attempt 
-% epochNames = ["Start" "Decision" "Response" "Outcome"];
-% x = categorical(ephysTab.EpochID, epochNames);
-% y = ephysTab.Ephys;
-% 
-% swarmchart(x, y)
-
-%% Gamble gain - start epoch 
-% Get every row that was a gamble gain 
-GG_tab = ephysTab(ephysTab.GambleGain == 1, :);
-
-% Get every row that was a 'start' epoch for gamble gain
-GG_start = GG_tab(strcmp(GG_tab.EpochID, 'Start'), :);
-
-% Remove columns that are longer than the minimum column
-minCols = min(cellfun(@(x) size(x, 2), GG_start.Ephys));
-
-for fi = 1:length(GG_start.Ephys)
-    currentData = GG_start.Ephys{fi};
-    if size(currentData,2) > minCols
-        % Remove columns that exceed minCols
-        currentData(:, minCols+1:end) = [];
-    end % if else 
-
-    GG_start.Ephys{fi} = currentData;
-
-end % for 
-
-GGStartEphys = cell2mat(GG_start.Ephys);
-
-%% Gamble loss - start epoch 
-
-% Get every row that was a gamble loss 
-GL_tab = ephysTab(ephysTab.GambleLoss == 1, :);
-
-% Get every row that was a 'start' epoch for gamble gain
-GL_start = GL_tab(strcmp(GL_tab.EpochID, 'Start'), :);
-
-% Remove columns that are longer than the minimum column
-minCols = min(cellfun(@(x) size(x, 2), GL_start.Ephys));
-
-for fi = 1:length(GL_start.Ephys)
-    currentData = GL_start.Ephys{fi};
-    if size(currentData,2) > minCols
-        % Remove columns that exceed minCols
-        currentData(:, minCols+1:end) = [];
-    end % if else 
-
-    GL_start.Ephys{fi} = currentData;
-
-end % for 
-
-GLStartEphys = cell2mat(GL_start.Ephys);
-
-GLStartEphys_trans = GLStartEphys';
-
 %%
-% Original 
-% minCols = min(cellfun(@(x) size(x, 2), GG_start.Ephys)); % Original
-
-% Original 
-% for fi = 1:length(GG_start.Ephys)
-%     currentData = GG_start.Ephys{fi};
-%     if size(currentData,2) > minCols
-%         % Remove columns that exceed minCols
-%         currentData(:, minCols+1:end) = [];
-%     end % if else 
-% 
-%     GG_start.Ephys{fi} = currentData;
-% 
-% end % for 
-% 
-% % Original
-% GGStartEphys = cell2mat(GG_start.Ephys);
-% 
-% 
-% 
-% GG_start = GG_tab(strcmp(GG_tab.EpochID, 'Start'), :);
-% 
-% epochNames = ["Start" "Decision" "Response" "Outcome"];
-
-
-%% Plot start epoch 
-
-% Gamble Gain - Start Epoch 
-GGStartEphys_trans = GGStartEphys';
-
-% Create a vector for x-values (column indices)
-x1 = repmat(1:40, 989, 1);
-
-% Reshape the data into column vectors
-x1 = x1(:);
-y1 = GGStartEphys_trans(:);
-
-% Create the swarm chart
-figure;
-swarmchart(x1, y1);
-xlabel('Trial');
-ylabel('Ephys');
-title('Swarm Chart of Start Epoch in amygdala');
-
-
-%% plot gamble loss start epoch 
-
-% Gamble Loss - Start Epoch 
-
-% Create a vector for x-values (column indices)
-x2 = repmat(1:48, 991, 1);
-
-% Reshape the data into column vectors
-x2 = x2(:);
-y2 = GLStartEphys_trans(:);
-
-% Create the swarm chart
-figure;
-swarmchart(x2, y2);
-xlabel('Trial');
-ylabel('Ephys');
-title('Swarm Chart of Start Epoch in amygdala');
-
-
-%% Plot both gamble gain and gamble loss start epochs
-swarmchart(x1,y1,'cyan')
-hold on 
-swarmchart(x2,y2,'yellow')
-
-%% Plot all epochs - make code automatic 
-
 % Get every row that was a gamble gain or gamble loss 
 GG_tab = ephysTab(ephysTab.GambleGain == 1, :); % gamble gain 
 GL_tab = ephysTab(ephysTab.GambleLoss == 1, :); % Gamble loss 
@@ -243,7 +107,7 @@ GL_res = GL_tab(strcmp(GL_tab.EpochID, 'Response'), :);
 % Outcome 
 GG_out = GG_tab(strcmp(GG_tab.EpochID, 'Outcome'), :);
 GL_out = GL_tab(strcmp(GL_tab.EpochID, 'Outcome'), :);
-
+%%
 % Temporary table 
 tmpTab = GL_out;
 
@@ -260,34 +124,83 @@ for fi = 1:length(tmpTab.Ephys)
     tmpTab.Ephys{fi} = currentData;
 
 end % for 
-
+%%
 % Save cell2mat with temporary variable
-GGStartEphys = cell2mat(tmpTab.Ephys);
-GLStartEphys = cell2mat(tmpTab.Ephys);
+GGStartEphys = cell2mat(tmpTab.Ephys)';
+GLStartEphys = cell2mat(tmpTab.Ephys)';
 
-GGDecEphys = cell2mat(tmpTab.Ephys);
-GLDecEphys = cell2mat(tmpTab.Ephys); 
+GGDecEphys = cell2mat(tmpTab.Ephys)';
+GLDecEphys = cell2mat(tmpTab.Ephys)'; 
 
-GGResEphys = cell2mat(tmpTab.Ephys);
-GLResEphys = cell2mat(tmpTab.Ephys);
+GGResEphys = cell2mat(tmpTab.Ephys)';
+GLResEphys = cell2mat(tmpTab.Ephys)';
 
-GGOutEphys = cell2mat(tmpTab.Ephys);
-GLOutEphys = cell2mat(tmpTab.Ephys);
+GGOutEphys = cell2mat(tmpTab.Ephys)';
+GLOutEphys = cell2mat(tmpTab.Ephys)';
 
-%% plot gamble loss start epoch 
+%% Plotting %%
+% Start Epoch %
+% GG Start 
+% Create a vector for x-values (column indices)
+% First input is number of trials and the second is ephys data 
+x1 = repmat(1:40, 989, 1);
 
-% Gamble Loss - Start Epoch 
+% Reshape the data into column vectors
+x1 = x1(:);
+y1 = GGStartEphys(:);
+
+% Create the swarm chart
+% figure;
+% swarmchart(x1, y1);
+% xlabel('Trial');
+% ylabel('Ephys');
+% title('Swarm Chart of Start Epoch in amygdala');
+
+% GL Start 
 
 % Create a vector for x-values (column indices)
 x2 = repmat(1:48, 991, 1);
 
 % Reshape the data into column vectors
 x2 = x2(:);
-y2 = GLStartEphys_trans(:);
+y2 = GLStartEphys(:);
 
 % Create the swarm chart
+% figure;
+% swarmchart(x2, y2);
+% xlabel('Trial');
+% ylabel('Ephys');
+% title('Swarm Chart of Start Epoch in amygdala');
+%% Plot GG and GL Start epoch together 
+figure; 
+swarmchart(x1,y1,'cyan')
+hold on 
+swarmchart(x2,y2,'yellow')
+hold on 
+title('Start Epoch')
+
+%% Decision 
+% GG Decision 
+% Create x 
+xGGdec = repmat(1:40, 9, 1);
+
+% Reshape the data into column vectors
+xGGdec = xGGdec(:);
+yGGdec = GGDecEphys(:);
+
+% GL Decision 
+% Create x 
+xGLdec = repmat(1:48, 3, 1);
+
+% Reshape the data into column vectors
+xGLdec = xGLdec(:);
+yGLdec = GLDecEphys(:);
+
+% Decision Figure 
+% Create the swarm chart
+% Create the swarm chart
 figure;
-swarmchart(x2, y2);
-xlabel('Trial');
-ylabel('Ephys');
-title('Swarm Chart of Start Epoch in amygdala');
+swarmchart(xGGdec, yGGdec, );
+
+figure;
+swarmchart(xGLdec, yGLdec);

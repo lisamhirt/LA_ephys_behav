@@ -91,20 +91,182 @@ LA_GL_rep = num2cell(reshape(repmat(LA_GL', 4, 1), [], 1));
 % Concatenate the new column to the existing data - 5th column is LA_GL
 ephysTrial = [ephysTrial, LA_GL_rep];
 
+% Make ephysTrial a table 
+ephysTab = cell2table(ephysTrial, "VariableNames", ["EpochID" "Ephys" "TrialNum" "GambleGain" "GambleLoss"]);
+
+
+% old swarmchart plotting attempt 
+% epochNames = ["Start" "Decision" "Response" "Outcome"];
+% x = categorical(ephysTab.EpochID, epochNames);
+% y = ephysTab.Ephys;
+% 
+% swarmchart(x, y)
+
+%% Gamble gain - start epoch 
+% Get every row that was a gamble gain 
+GG_tab = ephysTab(ephysTab.GambleGain == 1, :);
+
+% Get every row that was a 'start' epoch for gamble gain
+GG_start = GG_tab(strcmp(GG_tab.EpochID, 'Start'), :);
+
+% Remove columns that are longer than the minimum column
+minCols = min(cellfun(@(x) size(x, 2), GG_start.Ephys));
+
+for fi = 1:length(GG_start.Ephys)
+    currentData = GG_start.Ephys{fi};
+    if size(currentData,2) > minCols
+        % Remove columns that exceed minCols
+        currentData(:, minCols+1:end) = [];
+    end % if else 
+
+    GG_start.Ephys{fi} = currentData;
+
+end % for 
+
+GGStartEphys = cell2mat(GG_start.Ephys);
+
+%% Gamble loss - start epoch 
+
+% Get every row that was a gamble loss 
+GL_tab = ephysTab(ephysTab.GambleLoss == 1, :);
+
+% Get every row that was a 'start' epoch for gamble gain
+GL_start = GL_tab(strcmp(GL_tab.EpochID, 'Start'), :);
+
+% Remove columns that are longer than the minimum column
+minCols = min(cellfun(@(x) size(x, 2), GL_start.Ephys));
+
+for fi = 1:length(GL_start.Ephys)
+    currentData = GL_start.Ephys{fi};
+    if size(currentData,2) > minCols
+        % Remove columns that exceed minCols
+        currentData(:, minCols+1:end) = [];
+    end % if else 
+
+    GL_start.Ephys{fi} = currentData;
+
+end % for 
+
+GLStartEphys = cell2mat(GL_start.Ephys);
+
+GLStartEphys_trans = GLStartEphys';
+
 %%
+% Original 
+% minCols = min(cellfun(@(x) size(x, 2), GG_start.Ephys)); % Original
 
-minTest = min(ephysTrial{1,2}, [], "all");
-maxTest = max(ephysTrial{1,2}, [], "all");
+% Original 
+% for fi = 1:length(GG_start.Ephys)
+%     currentData = GG_start.Ephys{fi};
+%     if size(currentData,2) > minCols
+%         % Remove columns that exceed minCols
+%         currentData(:, minCols+1:end) = [];
+%     end % if else 
+% 
+%     GG_start.Ephys{fi} = currentData;
+% 
+% end % for 
+% 
+% % Original
+% GGStartEphys = cell2mat(GG_start.Ephys);
+% 
+% 
+% 
+% GG_start = GG_tab(strcmp(GG_tab.EpochID, 'Start'), :);
+% 
+% epochNames = ["Start" "Decision" "Response" "Outcome"];
 
-x = ones(2,length(ephysTrial{1,2}));
 
-swarmchart(x,ephysTrial{1,2})
+%% Plot start epoch 
+
+% Gamble Gain - Start Epoch 
+GGStartEphys_trans = GGStartEphys';
+
+% Create a vector for x-values (column indices)
+x1 = repmat(1:40, 989, 1);
+
+% Reshape the data into column vectors
+x1 = x1(:);
+y1 = GGStartEphys_trans(:);
+
+% Create the swarm chart
+figure;
+swarmchart(x1, y1);
+xlabel('Trial');
+ylabel('Ephys');
+title('Swarm Chart of Start Epoch in amygdala');
 
 
-%%
+%% plot gamble loss start epoch 
 
-ephysTab = cell2table(ephysTrial, "VariableNames", ["EpochID" "Eo"]);
+% Gamble Loss - Start Epoch 
+
+% Create a vector for x-values (column indices)
+x2 = repmat(1:48, 991, 1);
+
+% Reshape the data into column vectors
+x2 = x2(:);
+y2 = GLStartEphys_trans(:);
+
+% Create the swarm chart
+figure;
+swarmchart(x2, y2);
+xlabel('Trial');
+ylabel('Ephys');
+title('Swarm Chart of Start Epoch in amygdala');
 
 
+%% Plot both gamble gain and gamble loss start epochs
+swarmchart(x1,y1,'cyan')
+hold on 
+swarmchart(x2,y2,'yellow')
 
+%% Plot all epochs - make code automatic 
 
+% Get every row that was a gamble gain or gamble loss 
+GG_tab = ephysTab(ephysTab.GambleGain == 1, :); % gamble gain 
+GL_tab = ephysTab(ephysTab.GambleLoss == 1, :); % Gamble loss 
+ 
+% Get out epochs 
+% Get every row that was a 'start' epoch for gamble gain and gamble loss 
+GG_start = GG_tab(strcmp(GG_tab.EpochID, 'Start'), :);
+GL_start = GL_tab(strcmp(GL_tab.EpochID, 'Start'), :);
+
+% Decision 
+GG_dec = GG_tab(strcmp(GG_tab.EpochID, 'Decision'), :);
+GL_dec = GL_tab(strcmp(GL_tab.EpochID, 'Decision'), :);
+
+% Response 
+GG_res = GG_tab(strcmp(GG_tab.EpochID, 'Response'), :);
+GL_res = GL_tab(strcmp(GL_tab.EpochID, 'Response'), :);
+
+% Outcome 
+GG_out = GG_tab(strcmp(GG_tab.EpochID, 'Outcome'), :);
+GL_out = GL_tab(strcmp(GL_tab.EpochID, 'Outcome'), :);
+
+% Temporary table 
+tmpTab = GG_out;
+
+% Remove columns that are longer than the minimum column
+minCols = min(cellfun(@(x) size(x, 2), tmpTab.Ephys));
+
+for fi = 1:length(tmpTab.Ephys)
+    currentData = tmpTab.Ephys{fi};
+    if size(currentData,2) > minCols
+        % Remove columns that exceed minCols
+        currentData(:, minCols+1:end) = [];
+    end % if else 
+
+    tmpTab.Ephys{fi} = currentData;
+
+end % for 
+
+% Save cell2mat with temporary variable
+GGStartEphys = cell2mat(tmpTab.Ephys);
+GLStartEphys = cell2mat(tmpTab.Ephys);
+
+GGDecEphys = cell2mat(tmpTab.Ephys);
+GLDecEphys = cell2mat(tmpTab.Ephys); 
+
+GGResEphys = cell2mat(tmpTab.Ephys);
+GLResEphys = cell2mat(tmpTab.Ephys);
