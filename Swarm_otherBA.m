@@ -1,6 +1,6 @@
 %% Behavior %%
 % Get behavior / gambling info 
-cd('Y:\LossAversion\Patient folders\CLASE018\Behavioral-data'); % CD to patient folder
+cd('Z:\LossAversion\Patient folders\CLASE018\Behavioral-data'); % CD to patient folder
 
 % Load behavior file 
 eventTab = load("clase_behavior_CLASE018_738812.7161.mat");
@@ -58,58 +58,59 @@ LA_GL = all(LA_Gamble & outcomeLossTrial,2);
 %% Ephys %%
 
 % CD to folder 
-cd('Y:\LossAversion\LH_tempSave\CLASE018\Left');
+cd('Z:\LossAversion\LH_tempSave\CLASE018\Left');
 
 % Load ephys per brain area 
-ephys = load("CLASE018_LAMY_HFG.mat");
-ephys = ephys.zscoreEphys;
+% Anterior Hippocampus
+ephysH = load("CLASE018_LAH_HFG.mat");
+ephysH = ephysH.zscoreEphys;
 
 % Create column that has the trial number in it
-trialNum = reshape(repmat(1:135, 4,1), 540,1);
-trialNum = num2cell(trialNum);
+trialNumH = reshape(repmat(1:135, 4,1), 540,1);
+trialNumH = num2cell(trialNumH);
 
 % Concatenate the new column to the existing data
-ephysTrial = [ephys, trialNum];
+ephysTrialH = [ephysH, trialNumH];
 
 % Create column that has if it was LA_GG repeated 
-LA_GG_rep = num2cell(reshape(repmat(LA_GG', 4, 1), [], 1));
+LA_GG_repH = num2cell(reshape(repmat(LA_GG', 4, 1), [], 1));
 
 % Concatenate the new column to the existing data - 4th column is LA_GG
-ephysTrial = [ephysTrial, LA_GG_rep];
+ephysTrialH = [ephysTrialH, LA_GG_repH];
 
 % Create column that has if was LA_GL repeated 
-LA_GL_rep = num2cell(reshape(repmat(LA_GL', 4, 1), [], 1));
+LA_GL_repH = num2cell(reshape(repmat(LA_GL', 4, 1), [], 1));
 
 % Concatenate the new column to the existing data - 5th column is LA_GL
-ephysTrial = [ephysTrial, LA_GL_rep];
+ephysTrialH = [ephysTrialH, LA_GL_repH];
 
 % Make ephysTrial a table 
-ephysTab = cell2table(ephysTrial, "VariableNames", ["EpochID" "Ephys" "TrialNum" "GambleGain" "GambleLoss"]);
+ephysTabH = cell2table(ephysTrialH, "VariableNames", ["EpochID" "Ephys" "TrialNum" "GambleGain" "GambleLoss"]);
 
 %%
 % Get every row that was a gamble gain or gamble loss 
-GG_tab = ephysTab(ephysTab.GambleGain == 1, :); % gamble gain 
-GL_tab = ephysTab(ephysTab.GambleLoss == 1, :); % Gamble loss 
+GG_tabH = ephysTabH(ephysTabH.GambleGain == 1, :); % gamble gain 
+GL_tabH = ephysTabH(ephysTabH.GambleLoss == 1, :); % Gamble loss 
  
 % Get out epochs 
 % Get every row that was a 'start' epoch for gamble gain and gamble loss 
-GG_start = GG_tab(strcmp(GG_tab.EpochID, 'Start'), :);
-GL_start = GL_tab(strcmp(GL_tab.EpochID, 'Start'), :);
+GG_startH = GG_tabH(strcmp(GG_tabH.EpochID, 'Start'), :);
+GL_startH = GL_tabH(strcmp(GL_tabH.EpochID, 'Start'), :);
 
 % Decision 
-GG_dec = GG_tab(strcmp(GG_tab.EpochID, 'Decision'), :);
-GL_dec = GL_tab(strcmp(GL_tab.EpochID, 'Decision'), :);
+GG_decH = GG_tabH(strcmp(GG_tabH.EpochID, 'Decision'), :);
+GL_decH = GL_tabH(strcmp(GL_tabH.EpochID, 'Decision'), :);
 
 % Response 
-GG_res = GG_tab(strcmp(GG_tab.EpochID, 'Response'), :);
-GL_res = GL_tab(strcmp(GL_tab.EpochID, 'Response'), :);
+GG_resH = GG_tabH(strcmp(GG_tabH.EpochID, 'Response'), :);
+GL_resH = GL_tabH(strcmp(GL_tabH.EpochID, 'Response'), :);
 
 % Outcome 
-GG_out = GG_tab(strcmp(GG_tab.EpochID, 'Outcome'), :);
-GL_out = GL_tab(strcmp(GL_tab.EpochID, 'Outcome'), :);
+GG_outH = GG_tabH(strcmp(GG_tabH.EpochID, 'Outcome'), :);
+GL_outH = GL_tabH(strcmp(GL_tabH.EpochID, 'Outcome'), :);
 %%
 % Temporary table 
-tmpTab = GL_out;
+tmpTab = GL_outH;
 
 % Remove columns that are longer than the minimum column
 minCols = min(cellfun(@(x) size(x, 2), tmpTab.Ephys));
@@ -126,28 +127,28 @@ for fi = 1:length(tmpTab.Ephys)
 end % for 
 %%
 % Save cell2mat with temporary variable
-GGStartEphys = cell2mat(tmpTab.Ephys)';
-GLStartEphys = cell2mat(tmpTab.Ephys)';
+GGStartEphysH = cell2mat(tmpTab.Ephys)';
+GLStartEphysH = cell2mat(tmpTab.Ephys)';
 
-GGDecEphys = cell2mat(tmpTab.Ephys)';
-GLDecEphys = cell2mat(tmpTab.Ephys)'; 
+GGDecEphysH = cell2mat(tmpTab.Ephys)';
+GLDecEphysH = cell2mat(tmpTab.Ephys)'; 
 
-GGResEphys = cell2mat(tmpTab.Ephys)';
-GLResEphys = cell2mat(tmpTab.Ephys)';
+GGResEphysH = cell2mat(tmpTab.Ephys)';
+GLResEphysH = cell2mat(tmpTab.Ephys)';
 
-GGOutEphys = cell2mat(tmpTab.Ephys)';
-GLOutEphys = cell2mat(tmpTab.Ephys)';
+GGOutEphysH = cell2mat(tmpTab.Ephys)';
+GLOutEphysH = cell2mat(tmpTab.Ephys)';
 
 %% Plotting %%
 % Start Epoch %
 % GG Start 
 % Create a vector for x-values (column indices)
 % First input is number of trials and the second is ephys data 
-x1 = repmat(1:40, 989, 1);
+x1H = repmat(1:60, 989, 1);
 
 % Reshape the data into column vectors
-x1 = x1(:);
-y1 = GGStartEphys(:);
+x1H = x1H(:);
+y1H = GGStartEphysH(:);
 
 % Create the swarm chart
 % figure;
@@ -159,11 +160,11 @@ y1 = GGStartEphys(:);
 % GL Start 
 
 % Create a vector for x-values (column indices)
-x2 = repmat(1:48, 991, 1);
+x2H = repmat(1:72, 991, 1);
 
 % Reshape the data into column vectors
-x2 = x2(:);
-y2 = GLStartEphys(:);
+x2H = x2H(:);
+y2H = GLStartEphysH(:);
 
 % Create the swarm chart
 % figure;
@@ -173,34 +174,93 @@ y2 = GLStartEphys(:);
 % title('Swarm Chart of Start Epoch in amygdala');
 %% Plot GG and GL Start epoch together 
 figure; 
-swarmchart(x1,y1,'cyan')
+swarmchart(x1H,y1H,'green')
 hold on 
-swarmchart(x2,y2,'yellow')
+swarmchart(x2H,y2H,'red')
 hold on 
-title('Start Epoch')
+title('Start Epoch - LAH')
 
 %% Decision 
 % GG Decision 
 % Create x 
-xGGdec = repmat(1:40, 9, 1);
+xGGdecH = repmat(1:60, 9, 1);
 
 % Reshape the data into column vectors
-xGGdec = xGGdec(:);
-yGGdec = GGDecEphys(:);
+xGGdecH = xGGdecH(:);
+yGGdecH = GGDecEphysH(:);
 
 % GL Decision 
 % Create x 
-xGLdec = repmat(1:48, 3, 1);
+xGLdecH = repmat(1:72, 3, 1);
 
 % Reshape the data into column vectors
-xGLdec = xGLdec(:);
-yGLdec = GLDecEphys(:);
+xGLdecH = xGLdecH(:);
+yGLdecH = GLDecEphysH(:);
 
+%%
 % Decision Figure 
 % Create the swarm chart
 % Create the swarm chart
 figure;
-swarmchart(xGGdec, yGGdec, );
+swarmchart(xGGdecH, yGGdecH, 'green');
+hold on
+swarmchart(xGLdecH, yGLdecH, 'red');
+hold on 
+title('Decision Epoch - LAH')
 
+%% Response 
+% GG Response 
+% Create x 
+xGGresH = repmat(1:60, 497, 1);
+
+% Reshape the data into column vectors
+xGGresH = xGGresH(:);
+yGGresH = GGResEphysH(:);
+
+% GL Response  
+% Create x 
+xGLresH = repmat(1:72, 499, 1);
+
+% Reshape the data into column vectors
+xGLresH = xGLresH(:);
+yGLresH = GLResEphysH(:);
+
+%%
+% Response Figure 
+% Create the swarm chart
+% Create the swarm chart
 figure;
-swarmchart(xGLdec, yGLdec);
+swarmchart(xGGresH, yGGresH, 'green');
+hold on
+swarmchart(xGLresH, yGLresH, 'red');
+hold on 
+title('Response Epoch - LAH')
+
+%% Outcome
+
+% GG Outcome 
+% Create x 
+xGGoutH = repmat(1:60, 496, 1);
+
+% Reshape the data into column vectors
+xGGoutH = xGGoutH(:);
+yGGoutH = GGOutEphysH(:);
+
+% GL Outcome  
+% Create x 
+xGLoutH = repmat(1:72, 494, 1);
+
+% Reshape the data into column vectors
+xGLoutH = xGLoutH(:);
+yGLoutH = GLOutEphysH(:);
+
+%%
+% Outcome Figure 
+% Create the swarm chart
+% Create the swarm chart
+figure;
+swarmchart(xGGoutH, yGGoutH, 'green');
+hold on
+swarmchart(xGLoutH, yGLoutH, 'red');
+hold on 
+title('Outcome Epoch - LAH')
