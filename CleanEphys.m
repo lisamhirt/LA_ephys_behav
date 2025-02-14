@@ -24,7 +24,7 @@ switch PCname
         nwbMatCD = 'C:\Users\Lisa\Documents\MATLAB'; % NWB_read path 
         synologyCD = 'Z:\LossAversion\Patient folders'; % Synology path 
         NLXEventCD = 'E:\GitKraken\NLX-Event-Viewer\NLX_IO_Code'; % NLX event reader path 
-    case 'DESKTOP-3MTJ3ND' % lab computer
+    case 'LATERALHABENULA' % lab computer
         nwbMatCD = 'D:\MATLAB';
 end
 

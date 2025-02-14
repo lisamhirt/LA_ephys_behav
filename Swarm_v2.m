@@ -175,6 +175,8 @@ x2 = ones(size(y2))+0.2;
 % ylabel('Ephys');
 % title('Swarm Chart of Start Epoch in amygdala');
 %% Plot GG and GL Start epoch together 
+% This section was written with JAT. Use this section to replicate other
+% swarm charts
 figure; 
 s1 = swarmchart(x1,y1,'green')
 s1.XJitter = "rand";
