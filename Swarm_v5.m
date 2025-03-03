@@ -1,5 +1,5 @@
 % Inputs example %
-tempPtID = 'CLASE018';
+tempPtID = 'CLASE026';
 % trialType = 'LA'; or 'RA'
 trialType = 'LA';
 gambleType = {'gamble', 'alt'};
@@ -11,7 +11,8 @@ outcomeType = {'loss', 'noChange', 'gain'};
 % outcomeType = {'gain'};
 
 Hemi = 'Right';
-brainArea = {'RAH', 'RPH'};
+% brainArea = {'RAH', 'RPH'};
+brainArea = {'RAMY'};
 
 % Hemi = 'Left';
 % brainArea = {'LAMY', 'LAH', 'LPH'};

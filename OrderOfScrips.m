@@ -9,7 +9,7 @@
 % artifact rejection on the contacts, then it bipolar refrences the
 % artifact rejected contacts. 
 
-[cleanVolts] = CleanEphys_v2(tempPtID, shortBA, std_thresh, numCon)
+[cleanVolts] = CleanEphys_v2(tempPtID, shortBA, std_thresh, numCon);
 % [cleanVolts] = CleanEphys_v2('CLASE018', 'LAMY', 6, 1:3);
 
 % Inputs example 
@@ -28,18 +28,19 @@
 
 % 2. BandFiltered_Zscore
 
-[zscoreEphys] = BandFiltered_Zscore(tempPtID, Freq, cleanVolts)
+[zscoreEphys] = BandFiltered_Zscore(tempPtID, Freq, cleanVolts);
 
 % Inputs example
 % tempPtID = 'CLASE018';
 % Freq = [50 150];
 % cleanVolts = created from CleanEphys script 
 
-% Create paths and add folders to path
+% Create paths and add folders to path %
 % Create CD paths based on computer names
 % Before running script, make sure synology drive is on computer
 
-% Have been saving the output in LH_tempsave\ParticipantID
+% Save %%
+% Have been saving the output in LH_tempsae\ParticipantID
 
 % EG: Z:\LossAversion\LH_tempSave\CLASE018
 

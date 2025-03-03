@@ -1,6 +1,6 @@
 
 % Clear other variables 
-clearvars -except epochEphys1 epochEphys2 
+clearvars -except epochEphys1 epochEphys2 epochEphys3
 %%
 % Create table from ephys data 
 % epochEphys1
@@ -97,14 +97,14 @@ ephysTab = table(epochEphys3.GamStart', epochEphys3.GamDec',epochEphys3.GamRes',
 %%
 
 % Define variables
-partID = {'CLASE018'};
-LAscore = 1.87;
-STAIS = 44;
-STAIT = 36;
+partID = {'CLASE026'};
+LAscore = 1.4;
+STAIS = 47;
+STAIT = 45;
 Hemi = {'R'};
-BrainArea = {'PostHipp'};
+BrainArea = {'Amy'};
 
-longLength = 88;
+longLength = 147;
 
 % Repeat each variable 88 times (the length of the longest variable) 
 partID = repmat(partID, longLength, 1);
@@ -138,8 +138,11 @@ LPHtab = load('LPH_tab.mat');
 LPHtab = LPHtab.swarmOutput;
 
 AllTabLeft = [LAMYtab; LAHtab; LPHtab];
-
+%% 
 % Right 
+RAMYtab = load('RAMY_tab.mat');
+RAMYtab = RAMYtab.swarmOutput;
+
 RAHtab = load('RAH_tab.mat');
 RAHtab = RAHtab.swarmOutput;
 
@@ -148,13 +151,29 @@ RPHtab = RPHtab.swarmOutput;
 
 AllTabRight = [RAHtab; RPHtab];
 
+%%
+AllTabRight = RAMYtab;
+
 %% Save table as CSV files 
 
 % Left
-writetable(AllTabLeft, 'CLASE018_left.csv');
+writetable(AllTabLeft, 'CLASE026_left.csv');
 
 % Right
-writetable(AllTabRight, 'CLASE018_right.csv');
+writetable(AllTabRight, 'CLASE026_right.csv');
 
 %% Save both tables 
 
+% Save in outter folder 
+% EG: Z:\LossAversion\LH_Data\SwarmOutput\CLASE018
+
+% Load AllTabLeft and AllTabRight - save as a table and csv file
+
+allHemiT = [AllTabLeft; AllTabRight];
+writetable(allHemiT, 'CLASE026_bothHemi.csv');
+
+%%
+
+allPartTab = [allHemiT_CLASE018; allHemiT_CLASE024; allHemiT_CLASE026];
+
+writetable(allPartTab, 'allPartTab.csv');
