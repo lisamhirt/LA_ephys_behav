@@ -10,8 +10,11 @@ gambleType = {'gamble', 'alt'};
 outcomeType = {'loss', 'noChange', 'gain'};
 % outcomeType = {'gain'};
 
-Hemi = 'Left';
-brainArea = {'LAMY', 'LAH', 'LPH'};
+Hemi = 'Right';
+brainArea = {'RAH', 'RPH'};
+
+% Hemi = 'Left';
+% brainArea = {'LAMY', 'LAH', 'LPH'};
 
 epochINT = {'Start', 'Decision', 'Response', 'Outcome'};
 
@@ -23,6 +26,7 @@ PCname = getenv('COMPUTERNAME');
 switch PCname
     case 'DLPFC' % laptop
         synologyCD = 'Z:\LossAversion\Patient folders'; % Synology path
+        ephysCD = 'Z:\LossAversion\LH_tempSave';
     case 'LATERALHABENULA' % lab computer
         synologyCD = 'Y:\LossAversion\Patient folders';
         ephysCD = 'Y:\LossAversion\LH_tempSave'; % Ephys path

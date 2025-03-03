@@ -1,21 +1,19 @@
-function [cleanVolts] = CleanEphys(tempPtID, shortBA, std_thresh, numCon)
+function [cleanVolts] = CleanEphys_v2(tempPtID, shortBA, std_thresh, numCon)
 
 % Inputs example 
-tempPtID = 'CLASE018';
-shortBA = 'LAMY';
-std_thresh = 6;
+% tempPtID = 'CLASE018';
+% shortBA = 'LAMY';
+% std_thresh = 6;
 
 % Number of contacts of interest (1:3)
-numCon = 1:3;
+% numCon = 1:3;
 
 % Outputs 
 % cleanVolts: cleaned ephys data that has been artifact rejected and bipolar refrenced. 
 % Per brain area and contacts within the brain area 
 
-% The bipolar refrencing on this one doesn't keep all the contacts, it gets
-% rid of one of them
-
-% ma_timestampsDS: time stamps for each TTL that has been downsampled 
+% The Bipolar refrencing on this function keeps all the contacts and
+% doesn't get rid of one 
 
 %% Create paths and add folders to path
 % Create CD paths based on computer names
@@ -127,8 +125,6 @@ for i = 1:length(numCon)
 
     end % if else
 
-    % [outLFP] = tempVolt; old code
-    % [artVolt] = tempVolt; 
     % artVolt has all of the voltages per contact that passed the artifact
     % rejection
 
@@ -141,15 +137,27 @@ end % for / length(numCon)
 
 %% Bipolar Refrencing %%
 
-baVoltBI = zeros(height(artVolt)-1, width(artVolt)); % this now has the bipolar refrenced voltages for the brain area of interest
+baVoltBI = zeros(height(artVolt), width(artVolt)); % this now has the bipolar refrenced voltages for the brain area of interest
 
-for bi = 1: height(artVolt)-1
+for bi = 1: height(artVolt)
 
-    tempChanInt = artVolt(bi,:); % channel of interst
-    tempChanOth = artVolt((bi+1), :); % channel below that will be averaged with channel of interest
+    if bi ~= height(artVolt)
 
-    tempVoltRef =  tempChanOth - tempChanInt;
-    baVoltBI(bi,:) = tempVoltRef;
+        tempChanInt = artVolt(bi,:); % channel of interst
+        tempChanOth = artVolt((bi+1), :); % channel below that will be averaged with channel of interest
+
+        tempVoltRef =  tempChanOth - tempChanInt;
+        baVoltBI(bi,:) = tempVoltRef;
+
+    else bi == height(artVolt)
+
+        tempChanInt = artVolt(bi,:); % channel of interst
+        tempChanOth = artVolt(1, :); % channel below that will be averaged with channel of interest
+
+        tempVoltRef =  tempChanOth - tempChanInt;
+        baVoltBI(bi,:) = tempVoltRef;
+
+    end % if else
 
 end % for bi
 

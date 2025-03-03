@@ -19,6 +19,10 @@ switch PCname
         nwbMatCD = 'D:\MATLAB';
 end
 
+
+%% Delete unneeded variables - from other script
+% clearvars -except cleanVolts
+
 %% Load time data from NWB
 
 % Navigate to CLASE subject repository
