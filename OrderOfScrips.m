@@ -47,7 +47,7 @@
 %%
 
 % 3. Swarm_v5 
-% - there is an inner functiokn called 'innerSwarm_v2' you need to use
+% - there is an inner functiokn called 'innerSwarm_v3' you need to use
 
 % Saving the output (epochEphys1 or whatever number of contact) 
 % from this in LH_Data\SwarmOutput\PartID\Hemisphere 
@@ -61,3 +61,9 @@
 % electrodes from number 3. Save each brain area in a table, then
 % concatenate all the tables. Then save the concatenated table as a csv
 % file to do stats on 
+
+%% FOOOF 
+
+% 1. FOOOF_start_v1 
+
+% In this script there are inner functions that will do processing 

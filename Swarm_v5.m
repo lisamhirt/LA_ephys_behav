@@ -10,7 +10,7 @@ gambleType = {'gamble', 'alt'};
 outcomeType = {'loss', 'noChange', 'gain'};
 % outcomeType = {'gain'};
 
-Hemi = 'Right';
+Hemi = 'Left';
 % brainArea = {'RAH', 'RPH'};
 brainArea = {'RAMY'};
 
