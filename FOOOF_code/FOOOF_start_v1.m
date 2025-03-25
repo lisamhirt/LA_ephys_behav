@@ -241,3 +241,5 @@ clearvars -except allLFPtab epochEphys;
 
 %%
 
+allLFPtab is the cleaned ephys for each epoch. 
+epochEphys is cleaned ephys for each epoch but has been processed more and found the minimum ephys responses per condition 
