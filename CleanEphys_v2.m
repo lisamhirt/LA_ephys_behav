@@ -25,15 +25,19 @@ switch PCname
         nwbMatCD = 'C:\Users\Lisa\Documents\MATLAB'; % NWB_read path 
         synologyCD = 'Z:\LossAversion\Patient folders'; % Synology path 
         NLXEventCD = 'E:\GitKraken\NLX-Event-Viewer\NLX_IO_Code'; % NLX event reader path 
+        addpath('E:\GitKraken\NLX-Event-Viewer\NLX_IO_Code'); % add NLX files to path 
+        addpath(genpath([strcat(nwbMatCD,'\matnwb-2.5.0.0')])); % add nwb_read and subfolders to path
     case 'LATERALHABENULA' % lab computer
         nwbMatCD = 'C:\Users\Lisa\Documents\MATLAB';
         synologyCD = 'Y:\LossAversion\Patient folders'; % Synology path 
         NLXEventCD = 'Z:\GitKraken\NLX-Event-Viewer\NLX_IO_Code'; % NLX event reader path
+        addpath('Z:\GitKraken\NLX-Event-Viewer\NLX_IO_Code'); % add NLX files to path 
+        addpath(genpath([strcat(nwbMatCD,'\matnwb-2.5.0.0')])); % add nwb_read and subfolders to path
 end
 
 % Add NWB reader and NLX files to path  
-addpath(genpath([strcat(nwbMatCD,'\matnwb-2.5.0.0')])); % add nwb_read and subfolders to path
-addpath('E:\GitKraken\NLX-Event-Viewer\NLX_IO_Code'); % add NLX files to path 
+% addpath(genpath([strcat(nwbMatCD,'\matnwb-2.5.0.0')])); % add nwb_read and subfolders to path
+% addpath('E:\GitKraken\NLX-Event-Viewer\NLX_IO_Code'); % add NLX files to path 
 
 %% Load patient NWB file
 

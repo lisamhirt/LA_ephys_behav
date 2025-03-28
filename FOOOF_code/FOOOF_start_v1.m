@@ -3,7 +3,7 @@
 % Use code name CleanEphys_v2 
 
 % [cleanVolts] = CleanEphys_v2(tempPtID, shortBA, std_thresh, numCon);
-[cleanVolts] = CleanEphys_v2('CLASE018', 'LAMY', 6, 1:3);
+[cleanVolts] = CleanEphys_v2('CLASE018', 'RAH', 6, 3:5);
 
 % Inputs example 
 % tempPtID = 'CLASE018';
