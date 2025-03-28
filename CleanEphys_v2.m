@@ -26,7 +26,7 @@ switch PCname
         synologyCD = 'Z:\LossAversion\Patient folders'; % Synology path 
         NLXEventCD = 'E:\GitKraken\NLX-Event-Viewer\NLX_IO_Code'; % NLX event reader path 
     case 'LATERALHABENULA' % lab computer
-        nwbMatCD = 'D:\MATLAB';
+        nwbMatCD = 'C:\Users\Lisa\Documents\MATLAB';
         synologyCD = 'Y:\LossAversion\Patient folders'; % Synology path 
         NLXEventCD = 'Z:\GitKraken\NLX-Event-Viewer\NLX_IO_Code'; % NLX event reader path
 end
