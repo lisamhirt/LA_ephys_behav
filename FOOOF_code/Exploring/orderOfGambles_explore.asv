@@ -85,7 +85,7 @@ ALLData = [allGam; altCombine];
 
 
 %%
-SK=SSankey(ALLData(:,1),ALLData(:,2),ALLData(:,3));
+SK=SSankey(allGam(:,1),allGam(:,2),allGam(:,3));
 
 SK.RenderingMethod='interp';  
 
