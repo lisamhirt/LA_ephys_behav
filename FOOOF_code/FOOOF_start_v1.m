@@ -1,9 +1,8 @@
 %% ---- 1. Clean ephys data ---- %%
 % Pull in ephys from brain area, artifact reject it and bipolar refrence it
 % Use code name CleanEphys_v2 
-
 % [cleanVolts] = CleanEphys_v2(tempPtID, shortBA, std_thresh, numCon);
-[cleanVolts] = CleanEphys_v2('CLASE018', 'RAH', 6, 3:5);
+[cleanVolts] = CleanEphys_v2('CLASE026', 'LPH', 6, 1:4);
 
 % Inputs example 
 % tempPtID = 'CLASE018';
@@ -21,7 +20,7 @@
 
 % Inputs
 % cleanVolts from above code 
-tempPtID = 'CLASE018';
+tempPtID = 'CLASE026';
 
 % Create paths and add folders to path
 % Create CD paths based on computer names
@@ -232,7 +231,7 @@ allLFP(idx70) = {'Outcome'}; % Replace 70 with 'Outcome'
 
 % [allLFPtab epochEphys] = gambleEpochEphys_v1(allLFP, tempPtID, trialType, gambleType, outcomeType, epochINT);
 
-[allLFPtab epochEphys] = gambleEpochEphys_v1(allLFP, 'CLASE018', 'LA', {'gamble', 'alt'}, {'loss', 'noChange', 'gain'}, {'Start', 'Decision', 'Response', 'Outcome'});
+[allLFPtab epochEphys] = gambleEpochEphys_v1(allLFP, 'CLASE026', 'LA', {'gamble', 'alt'}, {'loss', 'noChange', 'gain'}, {'Start', 'Decision', 'Response', 'Outcome'});
 
 
 %% ephys to keep 
@@ -241,5 +240,5 @@ clearvars -except allLFPtab epochEphys;
 
 %%
 
-allLFPtab is the cleaned ephys for each epoch. 
-epochEphys is cleaned ephys for each epoch but has been processed more and found the minimum ephys responses per condition 
+% allLFPtab is the cleaned ephys for each epoch. 
+% epochEphys is cleaned ephys for each epoch but has been processed more and found the minimum ephys responses per condition 

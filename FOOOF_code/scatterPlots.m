@@ -26,7 +26,7 @@ tmpOut = allLFPtab(rowsWithOutcome, :); % tmpOut is now the table that has all t
 % FOOOF Settings - for all fooofs 
 settings = struct();
 f_range = [1,40];
-conRange = 1:2;
+conRange = 1:3;
 
 
 %% Gamble Gain
@@ -43,6 +43,9 @@ for gg = 1:height(GGTab)
 
     tmpGG = GGTab.Ephys{gg};
     tmpGG = mean(tmpGG(conRange,:)); % average tmp ephys
+
+    % If only one contact 
+    % tmpGG = tmpGG(conRange,:);
 
     % PSD - pwelch
     [psd, freqs] = pwelch(tmpGG,hamming(128), 64, 512, 500);
@@ -92,6 +95,9 @@ for gl = 1:height(GLTab)
     tmpGL = GLTab.Ephys{gl};
     tmpGL = mean(tmpGL(conRange,:)); % average tmp ephys
 
+    % If only one contact 
+    % tmpGL = tmpGL(conRange,:);
+
     % PSD - pwelch
     [psd, freqs] = pwelch(tmpGL,hamming(128), 64, 512, 500);
 
@@ -138,6 +144,9 @@ for an = 1:height(ANTab)
 
     tmpAN = ANTab.Ephys{an};
     tmpAN = mean(tmpAN(conRange,:)); % average tmp ephys
+
+     % If only one contact 
+    % tmpAN = tmpAN(conRange,:);
 
     % PSD - pwelch
     [psd, freqs] = pwelch(tmpAN,hamming(128), 64, 512, 500);
