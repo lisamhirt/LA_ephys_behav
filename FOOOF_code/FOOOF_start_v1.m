@@ -2,7 +2,7 @@
 % Pull in ephys from brain area, artifact reject it and bipolar refrence it
 % Use code name CleanEphys_v2 
 % [cleanVolts] = CleanEphys_v2(tempPtID, shortBA, std_thresh, numCon);
-[cleanVolts] = CleanEphys_v2('CLASE026', 'LPH', 6, 1:4);
+[cleanVolts] = CleanEphys_v2('CLASE018', 'RPH', 6, 1:3);
 
 % Inputs example 
 % tempPtID = 'CLASE018';
@@ -20,7 +20,7 @@
 
 % Inputs
 % cleanVolts from above code 
-tempPtID = 'CLASE026';
+tempPtID = 'CLASE018';
 
 % Create paths and add folders to path
 % Create CD paths based on computer names
@@ -231,7 +231,7 @@ allLFP(idx70) = {'Outcome'}; % Replace 70 with 'Outcome'
 
 % [allLFPtab epochEphys] = gambleEpochEphys_v1(allLFP, tempPtID, trialType, gambleType, outcomeType, epochINT);
 
-[allLFPtab epochEphys] = gambleEpochEphys_v1(allLFP, 'CLASE026', 'LA', {'gamble', 'alt'}, {'loss', 'noChange', 'gain'}, {'Start', 'Decision', 'Response', 'Outcome'});
+[allLFPtab epochEphys] = gambleEpochEphys_v1(allLFP, 'CLASE018', 'LA', {'gamble', 'alt'}, {'loss', 'noChange', 'gain'}, {'Start', 'Decision', 'Response', 'Outcome'});
 
 
 %% ephys to keep 

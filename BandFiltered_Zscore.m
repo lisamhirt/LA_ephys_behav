@@ -17,6 +17,7 @@ switch PCname
         % NLXEventCD = 'E:\GitKraken\NLX-Event-Viewer\NLX_IO_Code'; % NLX event reader path
     case 'LATERALHABENULA' % lab computer
         nwbMatCD = 'D:\MATLAB';
+        synologyCD = 'Y:\LossAversion\Patient folders';
 end
 
 
