@@ -9,8 +9,8 @@
 % artifact rejection on the contacts, then it bipolar refrences the
 % artifact rejected contacts. 
 
-[cleanVolts] = CleanEphys_v2(tempPtID, shortBA, std_thresh, numCon);
-% [cleanVolts] = CleanEphys_v2('CLASE018', 'LAMY', 6, 1:3);
+% [cleanVolts] = CleanEphys_v2(tempPtID, shortBA, std_thresh, numCon);
+[cleanVolts] = CleanEphys_v2('CLASE018', 'LAMY', 6, 1:3);
 
 % Inputs example 
 % tempPtID = 'CLASE018';

@@ -26,7 +26,7 @@ tmpOut = allLFPtab(rowsWithOutcome, :); % tmpOut is now the table that has all t
 % FOOOF Settings - for all fooofs 
 settings = struct();
 f_range = [1,40];
-conRange = 1:3;
+conRange = 1:2;
 
 
 %% Gamble Gain

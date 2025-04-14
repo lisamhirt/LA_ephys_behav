@@ -2,7 +2,7 @@
 % Pull in ephys from brain area, artifact reject it and bipolar refrence it
 % Use code name CleanEphys_v2 
 % [cleanVolts] = CleanEphys_v2(tempPtID, shortBA, std_thresh, numCon);
-[cleanVolts] = CleanEphys_v2('CLASE026', 'RAMY', 6, 1:2);
+[cleanVolts] = CleanEphys_v2('CLASE026', 'LAMY', 6, 1:2);
 
 % Inputs example 
 % tempPtID = 'CLASE018';
