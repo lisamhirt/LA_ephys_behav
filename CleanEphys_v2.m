@@ -5,7 +5,7 @@ function [cleanVolts] = CleanEphys_v2(tempPtID, shortBA, std_thresh, numCon)
 % shortBA = 'LAMY';
 % std_thresh = 6;
 
-% Number of contacts of interest (1:3)
+% Number of contacts in brain area (EG: (1:3))
 % numCon = 1:3;
 
 % Outputs 

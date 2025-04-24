@@ -62,8 +62,33 @@
 % concatenate all the tables. Then save the concatenated table as a csv
 % file to do stats on 
 
-%% FOOOF 
+%% FOOOF %% 
 
 % 1. FOOOF_start_v1 
 
-% In this script there are inner functions that will do processing 
+% In this script there are inner functions that will do processing. It runs
+% CleanEphys_v2, then it creates epochs for ephys, then it separates the
+% ephys per epochs and if it was gambling / alternative. This creates the
+% allLFPtab variable 
+
+% 2. FOOOF_epochs.m
+% This runs FOOOF on allLFPtab and on epochs (start, response, outcome) and
+% if it was a gg or gl or an. at the very bottom there is a function to
+% create a column that says if that peak frequency from FOOOF was delta,
+% theta, alpha etc. 
+
+
+%% Other scripts %
+
+% scatterPlots.m
+% this script will run FOOOF and create a scatter plot for an epoch (start,
+% outcome, etc) and if it was a gg or alternative 
+
+% scatterPlots_density.m
+% same thing as scatterPlots, just a different scatter plot that shows
+% density of the peak frequency from FOOOF
+
+% FOOOF_tableCreate.m
+% This creates a table from all of the FOOOF outputs I saved from
+% scatterPlots
+
