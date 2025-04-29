@@ -156,12 +156,14 @@ for bi = 1: height(artVolt)
         baVoltBI(bi,:) = tempVoltRef;
 
     else bi == height(artVolt)
+        continue
 
-        tempChanInt = artVolt(bi,:); % channel of interst
-        tempChanOth = artVolt(1, :); % channel below that will be averaged with channel of interest
-
-        tempVoltRef =  tempChanOth - tempChanInt;
-        baVoltBI(bi,:) = tempVoltRef;
+        % Commenting out this part for right now 
+        % tempChanInt = artVolt(bi,:); % channel of interst
+        % tempChanOth = artVolt(1, :); % channel below that will be averaged with channel of interest
+        % 
+        % tempVoltRef =  tempChanOth - tempChanInt;
+        % baVoltBI(bi,:) = tempVoltRef;
 
     end % if else
 
