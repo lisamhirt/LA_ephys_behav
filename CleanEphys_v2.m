@@ -12,8 +12,9 @@ function [cleanVolts] = CleanEphys_v2(tempPtID, shortBA, std_thresh, numCon)
 % cleanVolts: cleaned ephys data that has been artifact rejected and bipolar refrenced. 
 % Per brain area and contacts within the brain area 
 
-% The Bipolar refrencing on this function keeps all the contacts and
-% doesn't get rid of one 
+% The Bipolar refrencing on this function only keeps all but one of the
+% contacts. When i tried to keep all of the contacts the last one would be
+% wrong. 
 
 %% Create paths and add folders to path
 % Create CD paths based on computer names
@@ -143,11 +144,11 @@ end % for / length(numCon)
 
 %% Bipolar Refrencing %%
 
-baVoltBI = zeros(height(artVolt), width(artVolt)); % this now has the bipolar refrenced voltages for the brain area of interest
+baVoltBI = zeros(height(artVolt)-1, width(artVolt)); % this now has the bipolar refrenced voltages for the brain area of interest
 
-for bi = 1: height(artVolt)
+for bi = 1: height(artVolt)-1
 
-    if bi ~= height(artVolt)
+    % if bi ~= height(artVolt)
 
         tempChanInt = artVolt(bi,:); % channel of interst
         tempChanOth = artVolt((bi+1), :); % channel below that will be averaged with channel of interest
@@ -155,8 +156,8 @@ for bi = 1: height(artVolt)
         tempVoltRef =  tempChanOth - tempChanInt;
         baVoltBI(bi,:) = tempVoltRef;
 
-    else bi == height(artVolt)
-        continue
+    % else bi == height(artVolt)
+    %     continue
 
         % Commenting out this part for right now 
         % tempChanInt = artVolt(bi,:); % channel of interst
@@ -165,7 +166,7 @@ for bi = 1: height(artVolt)
         % tempVoltRef =  tempChanOth - tempChanInt;
         % baVoltBI(bi,:) = tempVoltRef;
 
-    end % if else
+    % end % if else
 
 end % for bi
 
